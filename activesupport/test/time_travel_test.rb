@@ -142,4 +142,17 @@ class TimeTravelTest < ActiveSupport::TestCase
       end
     end
   end
+
+  def test_time_helper_travel_with_time_subclass
+    Time.stub(:now, Time.now) do
+      subclass = Class.new(Time)
+
+      assert_equal subclass, subclass.now.class
+
+      travel 1.day do
+        assert_equal subclass, subclass.now.class
+        assert_equal Time.now.to_s(:db), subclass.now.to_s(:db)
+      end
+    end
+  end
 end
